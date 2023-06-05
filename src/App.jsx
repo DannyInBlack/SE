@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import axios from 'axios'
+import { addDoc, getDocs, collection, query, where } from "firebase/firestore"; 
+import { getDb } from "./firebase_setup/firebase"
 
 function App() {
 
-  const user = '1234';
+  const user = 'dan';
 
   const [data, setData] = useState([]);
 
@@ -20,34 +20,52 @@ function App() {
     
   }
 
-  const onSubmitClick = async () => {
-    const {wow} = await axios.post('https://httpbin.org/post', 
-    {
-      firstName: 'Fred',
-      lastName: 'Flintstone',
-      orders: [1, 2, 3]
-    }, 
-    {
-      headers: 
-      {
-        'Content-Type': 'multipart/form-data'
-      }
+  
+
+
+  const fetchCars = async () => {
+    const collection_ref = collection(getDb(), "cars")
+    const q = query(collection_ref, where("username", "==", user))
+    const doc_refs = await getDocs(q);
+
+    const res = []
+
+    doc_refs.forEach(car => {
+        res.push({
+            id: car.id, 
+            ...car.data()
+        })
     })
-    console.log(wow)
+
+    return res
+  }
+  
+
+  useEffect(() => {
+    fetchCars().then((data) => {
+      setData(data);
+    })
+  }, [])
+
+  const onSubmitClick = () => {
+    const collection_ref = collection(getDb(), "cars")
+    let inputs = document.getElementsByClassName('inputs');
+    let newCar = {}
+    newCar['plate'] = inputs[0].value
+    newCar['model'] = inputs[1].value
+    newCar['username'] = user
+    
+    addDoc(collection_ref, newCar)
+
+    setData(...data, newCar)
+    // addDoc(ref, data)
   }
 
-  const fetchCars = () => {
-    axios.get('http://localhost:80/software/dbh.php?user=' + user)
-    .then((response) => {
-      return response['data'];
-    })
-    .then(data => setData(data))
-  }
 
-  useEffect(() =>{
-     fetchCars()
-  }, []);
 
+
+
+  
 
   return (
     <>
@@ -55,14 +73,14 @@ function App() {
       
       <div id='main'>
         <div id='adding' style={{display:"none"}}>
-          <input type='text' placeholder="Plate"/>
-          <input type='text' placeholder="Model"/>
+          <input className='inputs' type='text' placeholder="Plate"/>
+          <input className='inputs' type='text' placeholder="Model"/>
           <button onClick={() => onSubmitClick()}>Submit</button>
         </div>
        {data.map(wow => (
-        <div className="card">
-        <p className='id'>Plate: {wow.Plate} </p>
-        <p>Model: {wow.Model}</p>
+        <div key={wow.id} className="card">
+        <p className='id'>Plate: {wow.plate} </p>
+        <p>Model: {wow.model}</p>
         </div>
        ))}
       </div>
@@ -72,3 +90,29 @@ function App() {
 }
 
 export default App
+
+
+// import './App.css';
+// import handleSubmit from './handles';
+// import { useRef } from 'react';
+ 
+// function App() {
+//   const dataRef = useRef()
+ 
+//   const submithandler = (e) => {
+//     e.preventDefault()
+//     handleSubmit(dataRef.current.value)
+//     dataRef.current.value = ""
+//   }
+ 
+//   return (
+//     <div className="App">
+//       <form onSubmit={submithandler}>
+//         <input type= "text" ref={dataRef} />
+//         <button type = "submit">Save</button>
+//       </form>
+//     </div>
+//   );
+// }
+ 
+// export default App;
