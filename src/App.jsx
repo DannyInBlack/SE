@@ -52,9 +52,14 @@ function App() {
     let newCar = {}
     let plate = inputs[0].value
     newCar['model'] = inputs[1].value
+    inputs[0].value = "";
+    inputs[1].value = "";
     newCar['username'] = user
     const carsRef = doc(getDb(), 'cars', plate);
     setDoc(carsRef, newCar, { merge: true });
+    fetchCars().then((data) => {
+      setData(data);
+    })
   }
 
   
