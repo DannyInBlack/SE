@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import axios from 'axios'
-import { addDoc, getDocs, collection, query, where, deleteDoc } from "firebase/firestore"; 
+import { doc, getDocs, collection, query, where, setDoc } from "firebase/firestore"; 
 import { getDb } from "./firebase_setup/firebase"
 
 function App() {
@@ -48,14 +48,13 @@ function App() {
   }, [])
 
   const onSubmitClick = () => {
-    const collection_ref = collection(getDb(), "cars")
     let inputs = document.getElementsByClassName('inputs');
     let newCar = {}
-    newCar['plate'] = inputs[0].value
+    let plate = inputs[0].value
     newCar['model'] = inputs[1].value
     newCar['username'] = user
-    
-    addDoc(collection_ref, newCar)
+    const carsRef = doc(getDb(), 'cars', plate);
+    setDoc(carsRef, newCar, { merge: true });
   }
 
   
@@ -73,7 +72,7 @@ function App() {
         </div>
        {data.map(wow => (
         <div key={wow.id} className="card">
-        <p className='id'>Plate: {wow.plate} </p>
+        <p className='id'>Plate: {wow.id} </p>
         <p>Model: {wow.model}</p>
         </div>
        ))}
