@@ -38,14 +38,18 @@
   background-color:bisque;
   border-radius: 1em;
   margin: 1em;
+  display: block;
   
 }
-#main, #adding{
-  display: flex;
-  flex-direction: column;
+#adding{
+  display: flexbox;
+  
 }
 #main{
-  padding: 10em;
+  display: flex;
+  flex-direction: column;
+  width: 43em;
+  padding: 5em;
   background-color: white;
   border-radius: 3em;
 }

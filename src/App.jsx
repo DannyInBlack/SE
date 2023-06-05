@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import axios from 'axios'
-import { doc, getDocs, collection, query, where, setDoc } from "firebase/firestore"; 
+import {deleteDoc, doc, getDocs, collection, query, where, setDoc } from "firebase/firestore"; 
 import { getDb } from "./firebase_setup/firebase"
 
 function App() {
@@ -10,13 +10,13 @@ function App() {
 
   const [data, setData] = useState([]);
 
-  // document.getElementById("adding").style.display = "none";
+  // document.getElementById("adding").style.visibility = "none";
 
   const onAddCarClick = () =>{
     let x = document.getElementById("adding");
 
-    if(x.style.display == "none") x.style.display = "block"
-    else x.style.display = "none"
+    if(x.style.visibility == "hidden") x.style.visibility = ""
+    else x.style.visibility = "hidden"
     
   }
 
@@ -62,6 +62,13 @@ function App() {
     })
   }
 
+  const onDeleteClick = (id) => {
+    deleteDoc(doc(getDb(), "cars", id));
+    fetchCars().then((data) => {
+      setData(data);
+    })
+  }
+
   
 
 
@@ -70,7 +77,7 @@ function App() {
       <h1>Cars</h1>
       
       <div id='main'>
-        <div id='adding' style={{display:"none"}}>
+        <div id='adding' style={{visibility:"hidden"}}>
           <input className='inputs' type='text' placeholder="Plate"/>
           <input className='inputs' type='text' placeholder="Model"/>
           <button onClick={() => onSubmitClick()}>Submit</button>
@@ -79,7 +86,9 @@ function App() {
         <div key={wow.id} className="card">
         <p className='id'>Plate: {wow.id} </p>
         <p>Model: {wow.model}</p>
+        <button onClick={() => onDeleteClick(wow.id)}>Delete</button>
         </div>
+        
        ))}
       </div>
       <h2><button id='addButton' onClick={() => onAddCarClick()} >Add Car</button></h2>
