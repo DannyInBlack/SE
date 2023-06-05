@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import axios from 'axios'
-import { addDoc, getDocs, collection, query, where } from "firebase/firestore"; 
+import { addDoc, getDocs, collection, query, where, deleteDoc } from "firebase/firestore"; 
 import { getDb } from "./firebase_setup/firebase"
 
 function App() {
@@ -56,16 +56,10 @@ function App() {
     newCar['username'] = user
     
     addDoc(collection_ref, newCar)
-
-    setData(...data, newCar)
-    // addDoc(ref, data)
   }
 
-
-
-
-
   
+
 
   return (
     <>
