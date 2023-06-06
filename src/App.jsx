@@ -41,14 +41,12 @@ function App() {
   }
   
 
-  useEffect(() => {
-    setInterval(() => {
-      fetchCars().then((data) => {
-      setData(data);
-    })
-    }, 2000)
+  setInterval(() => {
+    fetchCars().then((data) => {
+    setData(data);
+  })
+  }, 2000)
     
-  }, [])
 
   const onSubmitClick = () => {
     let inputs = document.getElementsByClassName('inputs');
