@@ -42,9 +42,12 @@ function App() {
   
 
   useEffect(() => {
-    fetchCars().then((data) => {
+    setInterval(() => {
+      fetchCars().then((data) => {
       setData(data);
     })
+    }, 2000)
+    
   }, [])
 
   const onSubmitClick = () => {
