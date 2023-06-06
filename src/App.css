@@ -60,7 +60,7 @@ body{
   background-color: black;
 }
 
-#adding > input{
+#adding > input, .search{
   
   height: 20px;
   margin: 4px;

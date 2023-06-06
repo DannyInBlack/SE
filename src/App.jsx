@@ -8,19 +8,17 @@ function App() {
 
   const user = 'dan';
 
-  const [data, setData] = useState([]);
+  const [cars, setCars] = useState([]);
 
-  // document.getElementById("adding").style.visibility = "none";
+  // document.getElementById("adding").style.visibility = "hidden";
 
   const onAddCarClick = () =>{
-    let x = document.getElementById("adding");
+    let form = document.getElementById("adding");
 
-    if(x.style.visibility == "hidden") x.style.visibility = ""
-    else x.style.visibility = "hidden"
+    if(form.style.visibility == "hidden") form.style.visibility = ""
+    else form.style.visibility = "hidden"
     
   }
-
-  
 
 
   const fetchCars = async () => {
@@ -39,13 +37,20 @@ function App() {
 
     return res
   }
-  
 
-  setInterval(() => {
+  const fetch = () =>{
     fetchCars().then((data) => {
-    setData(data);
-  })
-  }, 2000)
+      setCars(data);
+    })
+  }
+
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetch()
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
     
 
   const onSubmitClick = () => {
@@ -58,17 +63,26 @@ function App() {
     newCar['username'] = user
     const carsRef = doc(getDb(), 'cars', plate);
     setDoc(carsRef, newCar, { merge: true });
-    fetchCars().then((data) => {
-      setData(data);
-    })
+    fetch()
   }
+
 
   const onDeleteClick = (id) => {
     deleteDoc(doc(getDb(), "cars", id));
-    fetchCars().then((data) => {
-      setData(data);
-    })
+    fetch()
   }
+
+
+  // const onSearchClick = (id) => {
+  //   let plate = document.getElementById("searchBar").value;
+
+  //   console.log(plate)
+
+  //   // const collection_ref = collection(getDb(), "cars")
+  //   // const q = query(collection_ref, where("Document ID", "==", plate))
+  //   // const doc_refs = await getDocs(q);
+
+  // }
 
   
 
@@ -78,12 +92,18 @@ function App() {
       <h1>Cars</h1>
       
       <div id='main'>
+        <h2>Showing cars for user: {user}</h2>
+
         <div id='adding' style={{visibility:"hidden"}}>
           <input className='inputs' type='text' placeholder="Plate"/>
           <input className='inputs' type='text' placeholder="Model"/>
           <button onClick={() => onSubmitClick()}>Submit</button>
         </div>
-       {data.map(wow => (
+        {/* <div>
+          <input id='searchBar' className='search' type='text' placeholder='Search By Car Plate'></input>
+          <button onClick={() => onSearchClick()}>Search</button>
+        </div> */}
+       {cars.map(wow => (
         <div key={wow.id} className="card">
         <p className='id'>Plate: {wow.id} </p>
         <p>Model: {wow.model}</p>
