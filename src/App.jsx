@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import axios from 'axios'
 import {deleteDoc, doc, getDocs, collection, query, where, setDoc } from "firebase/firestore"; 
 import { getDb } from "./firebase_setup/firebase"
 
