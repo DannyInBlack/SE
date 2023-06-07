@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import './App.css'
 import {deleteDoc, doc, getDocs, collection, query, where, setDoc } from "firebase/firestore"; 
 import { getDb } from "./firebase_setup/firebase"
+import './App.css'
 
 function App() {
 
@@ -23,7 +23,8 @@ function App() {
   const fetchCars = async () => {
     const collection_ref = collection(getDb(), "cars")
     const q = query(collection_ref, where("username", "==", user))
-    const doc_refs = await getDocs(q);
+
+    const doc_refs = await getDocs(q).catch(error => console.log(error))
 
     const res = []
 
