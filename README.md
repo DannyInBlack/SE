@@ -1,5 +1,5 @@
 # Software Engineering Project
 
-<h2> Done using React with Firebase </h2>
+## Done using React with Firebase 
 
 <img src="./preview.jpg" />
