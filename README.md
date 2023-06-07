@@ -1,5 +1,4 @@
 # Software Engineering Project
 
-## Done using React with Firebase 
-
+### Preview
 <img src="./preview.jpg" />
