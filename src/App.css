@@ -3,6 +3,7 @@
   margin: 0px auto auto auto;
   padding: 2rem;
   text-align: center;
+  background-color: black;
 }
 
 .logo {
@@ -56,7 +57,7 @@
 #root >h1{
   color: white;
 }
-#root{
+body{
   background-color: black;
 }
 #search > h2{
