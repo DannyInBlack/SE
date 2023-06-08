@@ -4,6 +4,7 @@ import { getDb } from "./firebase_setup/firebase"
 import CarCard from './components/CarCard';
 import CarInput from './components/CarInput';
 import './App.css'
+import CarSearch from './components/CarSearch';
 
 
 function App() {
@@ -11,13 +12,14 @@ function App() {
   const user = 'dan';
   const [plate, setPlate] = useState("");
   const [model, setModel] = useState("");
+  const [searchBox, setSearchBox] = useState("");
   const [cars, setCars] = useState([]);
+  const [filteredCars, setFilteredCars] = useState([]);
 
   const onAddCarClick = () =>{
     let form = document.getElementById("adding");
 
-    if(form.style.visibility == "hidden") form.style.visibility = ""
-    else form.style.visibility = "hidden"
+    form.style.visibility = form.style.visibility == "hidden" ? "" : "hidden"
     
   }
 
@@ -25,17 +27,18 @@ function App() {
     const collection_ref = collection(getDb(), "cars")
     const q = query(collection_ref, where("username", "==", user))
 
-    getDocs(q).then(query =>
+    getDocs(q).then(query =>{
       setCars(
         query.docs.map(doc => {
           return { 
-            id: doc.id, 
+            plate: doc.id, 
             ...doc.data()
           }
         })
-      ) 
-    );
+      );
+    });
   }
+  
 
   const onSubmitClick = () => {
     const newCar = {
@@ -52,43 +55,38 @@ function App() {
     deleteDoc(doc(getDb(), "cars", id)).then(() => fetchCars());
   }
 
-  // const onSearchClick = (id) => {
-  //   let plate = document.getElementById("searchBar").value;
+  const searchMethod = (car) => {
+    let plate = car.plate.toLowerCase();
+    let model = car.model.toLowerCase();
+    let search = searchBox.toLowerCase();
 
-  //   console.log(plate)
+    return plate.includes(search) || model.includes(search)
+  }
 
-  //   // const collection_ref = collection(getDb(), "cars")
-  //   // const q = query(collection_ref, where("Document ID", "==", plate))
-  //   // const doc_refs = await getDocs(q);
+  useEffect(() => {
+    setFilteredCars(
+      cars.filter(car => searchMethod(car))
+    )
+  }, [searchBox, cars])
 
-  // }
+
   useEffect(() => fetchCars(), [])
 
   return (
     <>
       <h1>Cars</h1>
-      
+      <h2><button id='addButton' onClick={() => onAddCarClick()} >Add Car</button></h2>
+      <CarSearch {...{searchBox, setSearchBox}} />
       <div id='main'>
         <h2>Showing cars for user: {user}</h2>
-        <CarInput
-          {...{plate, setPlate, model, setModel, onSubmitClick}}
-        />
+        <CarInput {...{plate, setPlate, model, setModel, onSubmitClick}} />
 
-        {/* <div id='adding' style={{visibility:"hidden"}}>
-          <input value={plate} onChange={e => setPlate(e.target.value)} className='inputs' type='text' placeholder="Plate"/>
-          <input value={model} onChange={e => setModel(e.target.value)} className='inputs' type='text' placeholder="Model"/>
-          <button onClick={() => {onSubmitClick()}}>Submit</button>
-        </div> */
-
-        cars.map(car => {
-        return <CarCard 
-          key = {car.id}
-          {...{...car, onDeleteClick}}
-        />
-        })
-       }
+        {
+          filteredCars.map(car => {
+              return <CarCard key = {car.plate}{...{...car, onDeleteClick}}/> 
+          }) 
+        }
       </div>
-      <h2><button id='addButton' onClick={() => onAddCarClick()} >Add Car</button></h2>
     </>
   )
 }

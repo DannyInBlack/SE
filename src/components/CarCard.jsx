@@ -3,9 +3,9 @@ function CarCard(props){
 
   return (
     <div key={props.id} className="card">
-      <p className='id'>Plate: {props.id} </p>
+      <p className='id'>Plate: {props.plate} </p>
       <p>Model: {props.model}</p>
-      <button onClick={() => props.onDeleteClick(props.id)}>Delete</button>
+      <button onClick={() => props.onDeleteClick(props.plate)}>Delete</button>
     </div>
   )
 }
