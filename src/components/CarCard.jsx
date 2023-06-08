@@ -5,7 +5,7 @@ function CarCard(props){
     <div key={props.id} className="card">
       <p className='id'>Plate: {props.plate} </p>
       <p>Model: {props.model}</p>
-      <button onClick={() => props.onDeleteClick(props.plate)}>Delete</button>
+      <button className="delete" onClick={() => props.onDeleteClick(props.plate)}>Delete</button>
     </div>
   )
 }
