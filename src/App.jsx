@@ -1,15 +1,17 @@
-import { useEffect, useState } from 'react'
+import { Component, useEffect, useState } from 'react'
 import {deleteDoc, doc, getDocs, collection, query, where, setDoc } from "firebase/firestore"; 
 import { getDb } from "./firebase_setup/firebase"
+import CarCard from './components/CarCard';
+import CarInput from './components/CarInput';
 import './App.css'
+
 
 function App() {
 
   const user = 'dan';
-
+  const [plate, setPlate] = useState("");
+  const [model, setModel] = useState("");
   const [cars, setCars] = useState([]);
-
-  // document.getElementById("adding").style.visibility = "hidden";
 
   const onAddCarClick = () =>{
     let form = document.getElementById("adding");
@@ -19,59 +21,36 @@ function App() {
     
   }
 
-
-  const fetchCars = async () => {
+  const fetchCars = () => {
     const collection_ref = collection(getDb(), "cars")
     const q = query(collection_ref, where("username", "==", user))
 
-    const doc_refs = await getDocs(q).catch(error => console.log(error))
-
-    const res = []
-
-    doc_refs.forEach(car => {
-        res.push({
-            id: car.id, 
-            ...car.data()
+    getDocs(q).then(query =>
+      setCars(
+        query.docs.map(doc => {
+          return { 
+            id: doc.id, 
+            ...doc.data()
+          }
         })
-    })
-
-    return res
+      ) 
+    );
   }
-
-  const fetch = () =>{
-    fetchCars().then((data) => {
-      setCars(data);
-    })
-  }
-
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetch()
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
-    
 
   const onSubmitClick = () => {
-    let inputs = document.getElementsByClassName('inputs');
-    let newCar = {}
-    let plate = inputs[0].value
-    newCar['model'] = inputs[1].value
-    inputs[0].value = "";
-    inputs[1].value = "";
-    newCar['username'] = user
+    const newCar = {
+      'username': user,
+      'model': model
+    }
     const carsRef = doc(getDb(), 'cars', plate);
-    setDoc(carsRef, newCar, { merge: true });
-    fetch()
+    setModel("");
+    setPlate("");
+    setDoc(carsRef, newCar, { merge: true }).then(() => fetchCars());
   }
-
 
   const onDeleteClick = (id) => {
-    deleteDoc(doc(getDb(), "cars", id));
-    fetch()
+    deleteDoc(doc(getDb(), "cars", id)).then(() => fetchCars());
   }
-
 
   // const onSearchClick = (id) => {
   //   let plate = document.getElementById("searchBar").value;
@@ -83,9 +62,7 @@ function App() {
   //   // const doc_refs = await getDocs(q);
 
   // }
-
-  
-
+  useEffect(() => fetchCars(), [])
 
   return (
     <>
@@ -93,24 +70,23 @@ function App() {
       
       <div id='main'>
         <h2>Showing cars for user: {user}</h2>
+        <CarInput
+          {...{plate, setPlate, model, setModel, onSubmitClick}}
+        />
 
-        <div id='adding' style={{visibility:"hidden"}}>
-          <input className='inputs' type='text' placeholder="Plate"/>
-          <input className='inputs' type='text' placeholder="Model"/>
-          <button onClick={() => onSubmitClick()}>Submit</button>
-        </div>
-        {/* <div>
-          <input id='searchBar' className='search' type='text' placeholder='Search By Car Plate'></input>
-          <button onClick={() => onSearchClick()}>Search</button>
-        </div> */}
-       {cars.map(wow => (
-        <div key={wow.id} className="card">
-        <p className='id'>Plate: {wow.id} </p>
-        <p>Model: {wow.model}</p>
-        <button onClick={() => onDeleteClick(wow.id)}>Delete</button>
-        </div>
-        
-       ))}
+        {/* <div id='adding' style={{visibility:"hidden"}}>
+          <input value={plate} onChange={e => setPlate(e.target.value)} className='inputs' type='text' placeholder="Plate"/>
+          <input value={model} onChange={e => setModel(e.target.value)} className='inputs' type='text' placeholder="Model"/>
+          <button onClick={() => {onSubmitClick()}}>Submit</button>
+        </div> */
+
+        cars.map(car => {
+        return <CarCard 
+          key = {car.id}
+          {...{...car, onDeleteClick}}
+        />
+        })
+       }
       </div>
       <h2><button id='addButton' onClick={() => onAddCarClick()} >Add Car</button></h2>
     </>
@@ -118,29 +94,3 @@ function App() {
 }
 
 export default App
-
-
-// import './App.css';
-// import handleSubmit from './handles';
-// import { useRef } from 'react';
- 
-// function App() {
-//   const dataRef = useRef()
- 
-//   const submithandler = (e) => {
-//     e.preventDefault()
-//     handleSubmit(dataRef.current.value)
-//     dataRef.current.value = ""
-//   }
- 
-//   return (
-//     <div className="App">
-//       <form onSubmit={submithandler}>
-//         <input type= "text" ref={dataRef} />
-//         <button type = "submit">Save</button>
-//       </form>
-//     </div>
-//   );
-// }
- 
-// export default App;
