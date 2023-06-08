@@ -34,6 +34,10 @@
   }
 }
 
+#submit-btn{
+  background-color: rgba(5, 255, 5, 0.695);
+}
+
 .card {
   padding: 0.5em 6em;
   background-color:bisque;
@@ -78,9 +82,16 @@ body{
   height: 20px;
   margin: 4px;
   border-radius: 5px;
+  /* border: none; */
   padding: 10px;
   font-size: 20px;
+  border: 1px solid black
 }
+input:focus{
+  border: 1px solid black
+  /* border-color: black; */
+}
+/* .search */
 
 
 .id{

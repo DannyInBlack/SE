@@ -38,6 +38,11 @@ h1 {
 
 .delete{
   background-color: #ff0000b0;
+}
+#submit-btn{
+  background-color: rgba(6, 194, 6, 0.695);
+}
+.delete, #submit-btn{
   font-weight:600;
   color: whitesmoke;
   border:transparent;
@@ -46,6 +51,9 @@ h1 {
 }
 .delete:hover{
   background-color: #da0000b0;
+}
+#submit-btn:hover{
+  background-color: rgba(1, 178, 1, 0.695);
 }
 
 button {
