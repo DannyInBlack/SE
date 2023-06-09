@@ -1,13 +1,13 @@
 import { Component, useEffect, useState } from 'react'
 import {deleteDoc, doc, getDocs, collection, query, where, setDoc } from "firebase/firestore"; 
-import { getDb } from "./firebase_setup/firebase"
-import CarCard from './components/CarCard';
-import CarInput from './components/CarInput';
-import './App.css'
-import CarSearch from './components/CarSearch';
+import { getDb } from "../firebase_setup/firebase"
+import CarCard from '../components/CarCard';
+import CarInput from '../components/CarInput';
+import '../styles/root.css';
+import CarSearch from '../components/CarSearch';
 
 
-function App() {
+function Root() {
 
   const user = 'dan';
   const [plate, setPlate] = useState("");
@@ -91,4 +91,4 @@ function App() {
   )
 }
 
-export default App
+export default Root
